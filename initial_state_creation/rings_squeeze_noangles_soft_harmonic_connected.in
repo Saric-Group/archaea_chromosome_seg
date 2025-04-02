@@ -1,0 +1,164 @@
+#####################################################
+#PARAMETERS
+
+#NUMBER OF STEPS OF RUNS
+variable nsteps_squeeze			equal 	1e7
+variable nsteps_confine  		equal   5e6 
+variable nsteps 				equal 	$(v_nsteps_squeeze+v_nsteps_confine)
+
+#THERMODYNAMIC PARAMETERS
+variable mytemp         equal 	1.0	    	#Temperature
+
+#INFORMATION PRINTING PERIODS
+variable thermodump     equal   $(v_nsteps/1.5e4)			#Thermo info dump period
+variable trajdump       equal   $(floor(v_nsteps/15)) 	#Config info dump period
+variable trestart       equal   $(floor(v_nsteps/5.))  	#Restart configuration saving period
+
+#OTHER SIMULATION PARAMETERS
+variable tstep        	equal   0.01 	  	#Integration time step
+variable damp   		equal   0.1	   		#Langevin thermostat damping coefficient [F_friction = -(m/damp)*v]
+variable nve_lim		equal	0.05		#Max distance an atom can move in a time step during NVE integration
+variable neigh_cutoff	equal	1.0  		#Neighbor list cutoff
+variable box_x  		equal	xhi-xlo
+variable box_y	 		equal	yhi-ylo
+variable box_z  		equal	zhi-zlo
+variable comm_cutoff	equal   4. 			#Ghost cutoff 
+
+#SOFT POTENTIAL PARAMETERS
+#NB: The barrier height for the total potential is 2*esoft-epsilon, with epsilon=1.
+variable esoft			equal  	20 	
+variable cutoff1  		equal 	1.0
+
+#HARMONIC BONDS PARAMETERS
+variable k_bond  		equal 	100.
+variable req_bond		equal 	0.7 #This value should be chosen to ensure that for large enough esoft the chains do not cross
+
+#SPHERICAL WALL PARAMETERS
+variable r_wall  		equal  	6.786044
+variable epsilon_wall  	equal 	1.0
+variable sigma_wall  	equal  	1.0
+variable rcut_wall  	equal  	1.12246204831
+
+#FIX INDENT PARAMETERS
+variable ind_strength 	equal   500.  				#Strength K of the indenter: F=K(r-R)^2
+variable r_init_pref  	equal 	0.5   				#Initial indenter radius is this % of the box size
+variable ind_radius_fin equal	$(0.8*v_r_wall)    	#Final indenter radius
+
+#SEEDS
+variable lseed			equal 2139102		#Seed for fix langevin
+variable vseed			equal 17601			#Seed for creation of velocities
+
+#STRINGS
+variable fname 			string 	2rings_connected_N500_box140.06.lammpsdata			#name of the data file to be read to start the simulation
+variable thermofile     string  thermo.dat		#name of the file with thermodynamic infos
+variable simname 		string 	compress	#name of this simulation
+
+#VARIABLES FOR LOG TIMES
+#variable log_times_file		file 	log_times_${nsteps}_50_1.times
+#variable logdump				equal 	"next(log_times_file)"
+#####################################################
+#INITALIZATION
+units           lj          	#use lj units
+boundary        p p p       	#periodic boundary conditions
+atom_style     	bond
+
+#BOND STYLE: 
+bond_style      harmonic
+special_bonds  	lj 0.0 1.0 1.0 	#Interaction between 1st, 2nd and 3rd bonded neighbors
+
+#PAIR STYLE (WCA)
+pair_style     	soft ${cutoff1}	#These cutoff values are overwritten by the ones specified in the pair_coeff commands
+
+#Starting from an initial configuration (format lammpsdata):
+read_data       ${fname}
+
+#Restarting a previous simulation:
+#read_restart    ${fname}
+#reset_timestep  0
+
+#Define indenter radius (must be defined after simulation box is defined)
+variable ind_radius_init 	equal $(v_box_x*v_r_init_pref)
+variable ind_radius 		equal ramp(${ind_radius_init},${ind_radius_fin})
+
+#PAIR COEFFICIENTS
+#NB: The interaction is the sum of a soft potential and a cosine squared potential.
+#The soft potential gives excluded volume repulsion.
+#The cosine squared potential gives attraction.
+
+pair_coeff		* * ${esoft} ${cutoff1}
+
+comm_modify     cutoff ${comm_cutoff} #Extend ghost cutoff
+
+bond_coeff 		1 ${k_bond} ${req_bond} 
+bond_coeff 		2 ${k_bond} ${req_bond} 
+
+pair_write		1 1 10000 r 1e-10 ${cutoff1} pot_mono.table POT_MONO
+
+#NEIGHBOR LISTS
+neighbor		${neigh_cutoff} bin 		#value = skin = extra distance beyond cutoff
+neigh_modify	every 5 delay 0 check yes binsize $(v_box_x*0.1)
+
+#SET TIME STEP
+timestep	${tstep}
+
+####-PRINTING STUFF-##############################
+
+#DEFINITION OF VARIABLES FOR USE IN FIX PRINT
+variable step	equal step
+variable temp	equal temp
+variable etot	equal etotal
+variable ke		equal ke
+variable pe		equal pe
+variable press	equal press
+
+#THERMODYNAMIC INFO
+#thermo_style	custom step etotal ke pe temp press
+#thermo		${thermodump}
+#thermo_modify	norm no
+
+#CREATE VELOCITIES USING MAXWELL-BOLTZMANN DISTRIBUTION
+velocity 	all create ${mytemp} ${vseed} dist gaussian mom yes rot yes 
+run 0
+velocity	all scale ${mytemp}
+
+fix		fix_print all print ${thermodump} "${step} ${etot} ${ke} ${pe} ${temp} ${press} $(v_ind_radius)" file ${thermofile} screen no title "#1:step 2:etot 3:ke 4:pe 5:temp 6:press 7:ind_radius"
+
+#Save configurations in logarithmic time
+#dump           	1 all custom ${trajdump} dump/dump.${simname}.*.lammpstrj type mol xu yu zu
+#dump_modify    	1 sort id
+#dump_modify		1 format line "%d %d %.6f %.6f %.6f"
+#dump_modify		1 pad 10
+#dump_modify		1 every v_logdump
+
+#Save configurations in linear time
+dump			2 all custom ${trajdump} dumplin/dump.${simname}.*.lammpstrj type mol xu yu zu
+dump_modify		2 sort id
+dump_modify		2 pad 10
+dump_modify		2 format line "%d %d %.6f %.6f %.6f"
+
+##################################################
+#NVT (NVE+LANGEVIN) RUN
+restart     ${trestart} restart/${simname}.*.restart
+
+#FIRST STEP - SQUEEZE INTO SPHERICAL REGION
+fix  		fix_squeeze all indent ${ind_strength} sphere $(v_box_x*0.5) $(v_box_y*0.5) $(v_box_z*0.5) v_ind_radius side in
+fix 		fix_nve all nve/limit ${nve_lim}
+fix 		fix_langevin all langevin ${mytemp} ${mytemp} ${damp} ${lseed} 
+
+run			${nsteps_squeeze}
+
+unfix       fix_squeeze
+
+#SECOND STEP - DEFINE WALL AND RELAX
+region 		my_sphere 	sphere $(v_box_x*0.5) $(v_box_y*0.5) $(v_box_z*0.5) ${r_wall}
+fix 		fix_wall 	all wall/region my_sphere lj126 ${epsilon_wall} ${sigma_wall} ${rcut_wall}
+
+run 		${nsteps_confine}
+
+##################################################
+
+write_data      data.${simname}
+write_restart	restart/restart.${simname}
+
+
+

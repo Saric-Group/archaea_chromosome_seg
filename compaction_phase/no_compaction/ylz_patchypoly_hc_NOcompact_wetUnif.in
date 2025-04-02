@@ -1,0 +1,300 @@
+#Simulate polymers confined into a ylz vescicle (type 2).
+#The diameter of the ylz particles is assumed to be 1, whereas
+#the diameter of the polymer beads is > 1.
+#The polymer beads are rigid bodies with the same center of mass.
+#One bead (type 1) interacts with the membrane bead with a purely repulsive WCA potential;
+#the other bead (type 3) interacts with the membrane with an attractive cos2 potential.
+
+#In this version, we only introduce a patch-membrane attractive interaction (wetting),
+
+#####################################################
+#PARAMETERS
+
+#NUMBER OF STEPS OF RUNS
+variable nsteps_ramp 		file 	nsteps_ramp.dat 	#ramp epsilon_am -- membrane-patch
+variable nsteps_final 		file  	nsteps_final.dat 			#run with final values
+variable nsteps 			equal 	$(v_nsteps_ramp+v_nsteps_final)
+
+#THERMODYNAMIC PARAMETERS
+variable mytemp 		equal	1.0
+
+#INFORMATION PRINTING PERIODS
+variable thermodump     equal   1e3		#Thermo info dump period
+variable trajdump       equal   1e6 	#Config info dump period
+variable trestart       equal   1e7  	#Restart configuration saving period
+
+#VARIOUS SIMULATION PARAMETERS
+variable tstep        	equal   0.01   		#Integration time step
+variable damp   		equal   0.1	   		#Langevin thermostat damping coefficient [F_friction = -(m/damp)*v]
+variable neigh_cutoff	equal	0.5  		#Neighbor list cutoff
+variable comm_cutoff	equal   4. 			#Ghost cutoff
+variable box_x  		equal	xhi-xlo
+variable box_y  		equal	yhi-ylo
+variable box_z  		equal	zhi-zlo
+variable 2to1over6 		equal 	1.12246204831
+
+##################################################################################
+#EXCLUSION ZONE PARAMETERS; GAS-POLYMER AND MEMBRANE-PATCH INTERACTIONS ARE TURNED OFF IN THIS REGION
+#variable r_membrane 	file 	membrane_radius_equil.dat #the memrbane radius measured at equilibrium. For 10^4 membrane particles, R=26.0
+#variable width_factor 	file 	width_factor.dat
+#variable excluded_width	equal 	$(v_r_membrane*v_width_factor) 			#x-axis width of the excluded region
+
+##################################################################################
+#MEMBRANE PARAMETERS
+variable    rc_mm      	equal    2.6
+variable    mu          equal    3.0
+variable    zeta        equal    4.0
+variable    eps_mm      equal    4.3
+variable    sigma_mm   	equal    1.0
+variable    theta0_11   equal    0
+variable    beta    	equal    0
+variable 	k_tether 	equal 	 5.0 #Tether that stops the membrane's CoM from moving
+
+##################################################################################
+#ATTRACTIVE PATCH-ATTRACTIVE PATCH COSINE SQUARED POTENTIAL PARAMETERS (ATTRACTIVE PART)
+variable sigma_aa  			file 	poly_diameter.dat
+variable rc_cos2_aa  		equal 	$(1.5*v_sigma_aa)
+variable epsilon_aa_fin 	file 	epsilon_aa.dat
+#variable epsilon_aa_ramp 	equal 	ramp(0,v_epsilon_aa_fin)
+
+##################################################################################
+#POLYMER-POLYMER SOFT POTENTIAL PARAMETERS (REPULSIVE PART)
+#NB: The barrier height for the total potential is 2*esoft
+variable sigma_pp  		file 	poly_diameter.dat
+variable esoft_pp_init 	file 	esoft_pp.dat
+variable esoft_pp_fin	equal 	$(v_esoft_pp_init+0.5*v_epsilon_aa_fin) 
+#variable esoft_pp_ramp 	equal 	ramp(v_esoft_pp_init,v_esoft_pp_fin)
+
+##################################################################################
+#HARMONIC BONDS PARAMETERS
+variable k_bond  		equal 	100.
+variable req_bond		equal 	$(0.7*v_sigma_pp) #This value should be chosen to ensure that for large enough esoft the chains do not cross
+
+##################################################################################
+#POLYMER-POLYMER LJ POTENTIAL PARAMETERS (HARD REPULSIVE PART)
+variable epsilon_lj_pp 	equal 	4.0
+variable sigma_lj_pp 	equal 	$(0.5*v_req_bond/v_2to1over6)
+variable rc_lj_pp		equal	$(0.5*v_req_bond)
+
+##################################################################################
+#MEMBRANE-ATTRACTIVE PATCH COSINE SQUARED POTENTIAL PARAMETERS (ATTRACTIVE PART)
+variable epsilon_am_fin 	file epsilon_am.dat
+variable epsilon_am_ramp 	equal ramp(0,v_epsilon_am_fin)
+variable sigma_am 			equal $(0.5*(v_sigma_pp+v_sigma_mm)) 
+variable rc_cos2_am 		equal $(v_sigma_am+0.5*v_sigma_mm)
+
+##################################################################################
+#MEMBRANE-POLYMER LJ POTENTIAL PARAMETERS (REPULSIVE PART)
+variable epsilon_lj_pm 	equal 	4.0
+variable sigma_lj_pm 	equal 	$(0.5*(v_sigma_pp+v_sigma_mm)/v_2to1over6)
+variable rc_lj_pm		equal	${sigma_am}
+
+##################################################################################
+#SEEDS
+variable lseed			equal 1560			#Seed for fix langevin
+variable vseed			equal 21931			#Seed for creation of velocities
+
+##################################################################################
+#STRINGS
+variable fname 			string 	data			#name of the data file to be read to start the simulation
+variable thermofile     string  thermo.dat		#name of the file with thermodynamic infos
+variable simname 		string 	ylz_patchy_hc_wet_compact	#name of this simulation
+
+#####################################################
+#INITIALIZATION
+units           lj      #use lj units
+boundary        p p p   #periodic boundary conditions
+atom_style     	hybrid 	ellipsoid bond molecular
+
+	#The format of the Atoms section of the data file must be:
+	#atom-ID atom-type x y z ellipsoidflag density molecule-ID
+	#ellipsoidflag=1 for ylz particles, 0 for point particles
+	#If used, density must be set to 6/pi for particles of mass 1 and diameter 1
+
+#BONDS
+#We set the LJ interaction between bonded neighbors to 1 since they interact attractively via the patch 
+bond_style      harmonic
+special_bonds  	lj 1.0 1.0 1.0 	#Interaction prefactor between 1st, 2nd and 3rd bonded neighbors
+
+#Starting from an initial configuration (format lammpsdata):
+read_data       ${fname}
+
+#Restarting a previous simulation:
+#read_restart    ${fname}
+#reset_timestep  0
+
+#The case of uniform wetting/compaction is recovered by setting excluded_width=0
+#region 	exclusion 	block $(0.5*(v_box_x-v_excluded_width)) $(0.5*(v_box_x+v_excluded_width)) EDGE EDGE EDGE EDGE side in
+#region exclusion_complement	block $(0.5*(v_box_x-v_excluded_width)) $(0.5*(v_box_x+v_excluded_width)) EDGE EDGE EDGE EDGE side out
+
+group 	polymers 	type 1
+group  	membrane 	type 2
+group   patches  	type 3
+group   patchy_poly 	union polymers patches
+#group  	patches_nostick dynamic patches region exclusion every 5 #In this region, patches will *NOT* interact with membrane atoms / other patches
+
+#SET MASSES
+# These commands override stuff in the data file (where density is used)
+mass 1 1.0
+mass 2 1.0
+mass 3 0.1 #patch mass is smaller
+
+#BOND COEFFICIENTS
+bond_coeff 	1 ${k_bond} ${req_bond} 
+
+########################################################################################################
+#WRITE FINAL FORM OF THE INTERACTION POTENTIALS (EXCLUDING MEMBRANE-MEMBRANE)
+########################################################################################################
+#PAIR STYLE
+pair_style     	hybrid/overlay soft 1.0 cosine/squared 1.0 lj/cut 1.0 zero 1.0
+
+#PAIR COEFFICIENTS	
+#!!!!!!!!!!!!!!!!!ONLY FOR PRINTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+pair_coeff	1 1 soft 			${esoft_pp_fin} ${sigma_pp}					#polymer-polymer
+pair_coeff	1 1 lj/cut 			${epsilon_lj_pp} ${sigma_lj_pp} ${rc_lj_pp} #polymer-polymer
+pair_coeff	1 2 lj/cut 			${epsilon_lj_pm} ${sigma_lj_pm} ${rc_lj_pm} #polymer-membrane
+pair_coeff  1 3 zero 			1.0											#polymer-patch
+pair_coeff 	2 2 zero 			1.0  										#membrane-membrane (ONLY FOR WRITING)
+pair_coeff 	2 3 cosine/squared 	${epsilon_am_fin} ${sigma_am} ${rc_cos2_am} #membrane-patch 
+pair_coeff  3 3 cosine/squared 	${epsilon_aa_fin} ${sigma_aa} ${rc_cos2_aa}	#patch-patch
+
+pair_modify pair lj/cut shift yes
+#!!!!!!!!!!!!!!!!!ONLY FOR PRINTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+pair_write	1 1 1000 r 0.5 	 3.0 pot_pp_fin.table POT_POLY_POLY
+pair_write	1 2 1000 r 1.0 	 3.0 pot_pm.table POT_POLY_MEM
+pair_write	2 3 1000 r 1e-10 3.0 pot_am_fin.table POT_MEM_PATCH
+pair_write	3 3 1000 r 1e-10 3.0 pot_aa_fin.table POT_PATCH_PATCH
+
+#Erase previous settings
+pair_coeff * * none
+
+########################################################################################################
+#PAIR STYLE
+pair_style     	hybrid/overlay soft 1.0 cosine/squared 1.0 lj/cut 1.0 ylz 1.0 zero 1.0	#These cutoff values are overwritten by the ones specified in the pair_coeff commands
+
+#PAIR COEFFICIENTS
+#NB: The interaction is the sum of a soft potential and a cosine squared potential.
+#The soft potential gives excluded volume repulsion.
+#The cosine squared potential gives attraction.
+
+pair_coeff	1 1 soft 			${esoft_pp_fin} ${sigma_pp}					#polymer-polymer
+pair_coeff	1 1 lj/cut 			${epsilon_lj_pp} ${sigma_lj_pp} ${rc_lj_pp} #polymer-polymer
+pair_coeff	1 2 lj/cut 			${epsilon_lj_pm} ${sigma_lj_pm} ${rc_lj_pm} #polymer-membrane
+pair_coeff  1 3 zero 			1.0											#polymer-patch
+pair_coeff 	2 2 ylz 			${eps_mm} ${sigma_mm} ${zeta} ${mu} 0 ${rc_mm}  #membrane-membrane
+pair_coeff 	2 3 cosine/squared 	0 ${sigma_am} ${rc_cos2_am} 					#membrane-patch - INITIALLY NO ATTRACTION
+pair_coeff  3 3 cosine/squared 	${epsilon_aa_fin} ${sigma_aa} ${rc_cos2_aa}	#patch-patch
+
+pair_modify pair lj/cut shift yes
+pair_modify neigh/trim yes
+
+#comm_modify     cutoff ${comm_cutoff} #Extend ghost cutoff
+
+#NEIGHBOR LISTS
+neighbor		${neigh_cutoff} bin 		#value = skin = extra distance beyond cutoff
+neigh_modify	every 5 delay 0 check no 	#binsize $(v_box_x*0.1)
+
+###IMPORTANT!###################
+#These commands make it so that the patches in the exclusion zone do not interact with other patches nor with membrane particles
+
+#neigh_modify	exclude group patches_nostick patches_nostick check no #to make it so that particles in the groups membrane and patches_nostick do not interact with each other
+#neigh_modify	exclude group membrane patches_nostick check no #to make it so that particles in the groups membrane and patches_nostick do not interact with each other
+################################
+
+#PERFORM ENERGY MINIMIZATION
+#print "Start energy minimization"
+#minimize 		1.0e-6 1.0e-8 1000 100000 #etol ftol maxiter maxeval
+#reset_timestep 	0
+#print "Energy minimzation successful"
+
+#COMPUTES
+compute 	asphere_temp_mem membrane temp/asphere
+#compute    quat membrane property/atom quatw quati quatj quatk
+#compute  	diameter all property/atom shapex shapey shapez
+
+#CREATE VELOCITIES USING MAXWELL-BOLTZMANN DISTRIBUTION
+velocity 	all create ${mytemp} ${vseed} dist gaussian mom yes rot yes 
+run 0
+velocity	all scale ${mytemp}
+
+#SET TIME STEP
+timestep	${tstep}
+
+####-PRINTING STUFF-##############################################################################
+#Save configurations in linear time
+#Save configurations in linear time
+#dump			dump_coors all custom ${trajdump} dumplin/dump.${simname}.*.lammpstrj type id mol xu yu zu c_quat[1] c_quat[2] c_quat[3] c_quat[4]
+#dump_modify	dump_coors sort id
+#dump_modify	dump_coors pad 10
+#dump_modify	dump_coors format line "%d %d %d %.4f %.4f %.4f %.3f %.3f %.3f %.3f"
+
+dump			dump_coors all custom ${trajdump} dumplin/dump.${simname}.*.lammpstrj type id mol xu yu zu
+dump_modify		dump_coors sort id
+dump_modify		dump_coors pad 10
+dump_modify		dump_coors format line "%d %d %d %.4f %.4f %.4f"
+
+fix		fix_print all print ${thermodump} "$(step) $(etotal) $(ke) $(epair) $(ebond) $(temp) $(press)" file ${thermofile} screen no title "#1:step 2:etot 3:ke 4:epair 5:ebond 6:temp 7:press"
+
+#THERMODYNAMIC INFO
+thermo_style	custom step etotal ke epair ebond temp c_asphere_temp_mem press
+thermo			${thermodump}
+thermo_modify	norm yes
+
+restart     ${trestart} restart/${simname}.*.restart
+
+##################################################################################################
+#INTEGRATOR AND THERMOSTAT
+#fix  	freeze_mem 			membrane setforce 0 0 0 #Freeze membrane (for testing)
+#fix  	fix_nve_rigid 		patchy_poly rigid/small molecule #The patchy particles are treated as rigid bodies
+#fix 	fix_langevin 		patchy_poly langevin ${mytemp} ${mytemp} ${damp} ${lseed} zero yes
+
+fix 	fix_nve_asphere 	membrane nve/asphere
+fix  	fix_nve_rigid 		patchy_poly rigid/small molecule #The patchy particles are treated as rigid bodies
+fix 	fix_langevin 		all langevin ${mytemp} ${mytemp} ${damp} ${lseed} zero yes
+#fix  	fix_tether 			membrane spring tether ${k_tether} $(0.5*v_box_x) $(0.5*v_box_y) $(0.5*v_box_z) 0.0 #Tether the mebrane to the center of the box; during constriction, it avoids slipping. During the other phases, it is done for consistency with the constriction phase.
+
+##################################################################################################
+#IMPORTANT: For some reasion, LAMMPS (version 02082023) does not normally allow to ramp the epsilon parameter of the cosine/squared potential;
+#The .cpp and .h files of this potential must be modified in order to allow this.
+#
+#  In the file EXTRA-PAIR/pair_cosine_squared.h, uncomment the following line:
+#  void *extract(const char *, int &);
+#
+#  In the file EXTRA-PAIR/pair_cosine_squared.cpp, add at the end:
+#
+#  void *PairCosineSquared::extract(const char *str, int &dim)
+#  {
+#    dim = 2;
+#    if (strcmp(str, "epsilon") == 0) return (void *) epsilon;
+#    if (strcmp(str, "sigma") == 0) return (void *) sigma;
+#    return nullptr;
+#  }
+
+##################################################################################################
+# MEMBRANE WETTING + POLYMER COMPACTION#
+####################
+#RAMP MEMBRANE-PATCH ATTRACTIVE INTERACTION (eps_am)
+#RAMP PATCH-PATCH ATTRACTIVE INTEARCTION AND POLYMER-POLYMER REPULSIVE INTERACTION
+
+fix 	fix_epsilon_am_ramp all adapt 1 pair cosine/squared epsilon 2 3 v_epsilon_am_ramp #membrane-patch
+
+run		${nsteps_ramp}
+
+unfix 	fix_epsilon_am_ramp
+
+#Set final value for membrane-patch potential
+pair_coeff  2 3 none	#wipe out previos potential settings
+pair_coeff 	2 3 cosine/squared 	${epsilon_am_fin} ${sigma_am} ${rc_cos2_am} 	#membrane-patch
+
+##################################################################################################
+#RUN WITH FINAL VALUES
+
+run  	${nsteps_final}
+
+##################################################################################################
+
+write_restart	restart/restart.${simname}
+write_data      data.${simname}
+
+
