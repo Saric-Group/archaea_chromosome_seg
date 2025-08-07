@@ -79,13 +79,25 @@ We however recommend to recompile the executable, following the steps listed in 
 
 	Example: ../../lammps/lmp_mpi -in ylz_patchypoly_hc_mobile.in
 
-4) You will obtain a LAMMPS data file data.ylz_patchy_hc_mobile
+4) You will obtain a LAMMPS data file data.ylz_patchy_hc_mobile. Note that, in this file, x axis does *not* coincide with the axis of maximum segregation.
+
+### Choosing the x axis as the axis of maximum segregation
+
+This step is required to ensure that, during the compaction phase, compaction is inhibited in a volume that lays perpendicular to the axis of maximum segregation.
+
+1) From the mobile_phase directory, run the script lda_segregation_patchy.py (see **Data Analysis** below for details).
+
+2) You will obtain a file last_lda_normal.dat.
+
+3) Run the script data_ylz_patchypoly_rotate_xaxis.py.
+
+4) You will obtain a file data.ylz_patchy_hc_mobile_rotate_xaxis_lda_norm. In this file, the x axis coincides with the axis of maximum segregation as determined by LDA. 
 
 ## Compaction phase
 
 1) Move into one of the directories in the compaction_phase directory (for example, fast_compaction)
 
-2) Copy the LAMMPS data file data.ylz_patchy_hc_mobile, generated at the end of the mobile phase simulation, into the directory and rename it data (an example file is already present in the directory).
+2) Copy the LAMMPS data file data.ylz_patchy_hc_mobile_rotate_xaxis_lda_norm, generated at the end of the mobile phase simulation, into the directory and rename it "data" (an example file is already present in the directory).
 
 3) Run the LAMMPS input file, for example ylz_patchypoly_hc_compactFast_wetUnif.in:
 
