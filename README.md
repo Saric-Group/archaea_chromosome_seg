@@ -121,12 +121,18 @@ The analysis folder contains three python scripts to perform analysis of the LAM
 
 This scripts analyzes the membrane configurations. It approximates the membrane surface using the convex hull method, and returns several quantities:
 
--natoms.dat 					Number of membrane atoms
+-natoms.dat 				Number of membrane atoms
+
 -hull_radius_av.dat  			Mean membrane radius
+
 -hull_volume_vs_time.dat  		Membrane volume vs time
+
 -hull_area_vs_time.dat  		Membrane area vs time
+
 -hull_radius_vs_time.dat  		Membrane radius vs time 
--neigh_distance_vs_time.dat 	Mean distance between neighbouring membrane particles vs time
+
+-neigh_distance_vs_time.dat 		Mean distance between neighbouring membrane particles vs time
+
 -area_per_bead_vs_time.dat 		Mean area per membrane bead vs time (estimate)
 
 2) lda_segregation_patchy.py
