@@ -1,8 +1,4 @@
-#############################################
-#############################################
-Requirements
-#############################################
-#############################################
+# Requirements
 
 - A Bourne shell compatible “Unix” shell program (frequently this is bash)
 - Open MPI version 4.1.2 (with libraries)
@@ -15,9 +11,7 @@ Requirements
 
 - LAMMPS version 02/08/2023 (stable release)
 
-#############################################
-Compiling LAMMPS (for Unix-based systems)
-#############################################
+## Compiling LAMMPS (for Unix-based systems)
 
 (See also: https://docs.lammps.org/Build_make.html)
 
@@ -43,29 +37,23 @@ The following instructions allow to install LAMMPS using make on Ubuntu or other
 
 3) Install additional packages (for examples: make yes-rigid)
 
-ASPHERE  
-EXTRA-COMPUTE 
-EXTRA-MOLECULE 
-EXTRA-PAIR  
-MOLECULE 
-RIGID
+- ASPHERE  
+- EXTRA-COMPUTE 
+- EXTRA-MOLECULE 
+- EXTRA-PAIR  
+- MOLECULE 
+- RIGID
 
 5) Install LAMMPS using make: 
 	
 	make mpi
 
-#############################################
-#############################################
-LAMMPS simulations
-#############################################
-#############################################
+# LAMMPS simulations
 
 In the lammps directory, you will find a compiled LAMMPS executable lmp_mpi (compiled on Ubuntu 22.04.5).
 We however recommend to recompile the executable, following the steps listed in "Compiling LAMMPS"
 
-#############################################
-Initial state creation
-#############################################
+## Initial state creation
 
 1) Move into the directory initial_state_creation
 
@@ -81,9 +69,7 @@ Initial state creation
 
 7) You will obtain a LAMMPS data file data_mesh_ylz_patchy_poly_diameter2.00_natoms_sphere6750_lx123.24_ly82.16_lz82.16.lammpsdata - This is the initial configuration for the mobile phase simulation.
 
-#############################################
-Mobile phase
-#############################################
+## Mobile phase
 
 1) Move into the directory mobile_phase
 
@@ -95,9 +81,7 @@ Mobile phase
 
 4) You will obtain a LAMMPS data file data.ylz_patchy_hc_mobile
 
-#############################################
-Compaction phase
-#############################################
+## Compaction phase
 
 1) Move into one of the directories in the compaction_phase directory (for example, fast_compaction)
 
@@ -109,46 +93,42 @@ Compaction phase
 
 4) You will obtain a .lammpsdata file (final state after compaction).
 
-#############################################
-#############################################
-Data Analysis
-#############################################
-#############################################
+# Data Analysis
 
 The analysis folder contains three python scripts to perform analysis of the LAMMPS simulations.
 
-1) membrane_volume_radius_patchypoly.py
+1) **membrane_volume_radius_patchypoly.py**
 
 This scripts analyzes the membrane configurations. It approximates the membrane surface using the convex hull method, and returns several quantities:
 
--natoms.dat 				Number of membrane atoms
+- natoms.dat: Number of membrane atoms
 
--hull_radius_av.dat  			Mean membrane radius
+- hull_radius_av.dat: Mean membrane radius
 
--hull_volume_vs_time.dat  		Membrane volume vs time
+- hull_volume_vs_time.dat: Membrane volume vs time
 
--hull_area_vs_time.dat  		Membrane area vs time
+- hull_area_vs_time.dat: Membrane area vs time
 
--hull_radius_vs_time.dat  		Membrane radius vs time 
+- hull_radius_vs_time.dat: Membrane radius vs time 
 
--neigh_distance_vs_time.dat 		Mean distance between neighbouring membrane particles vs time
+- neigh_distance_vs_time.dat: Mean distance between neighbouring membrane particles vs time
 
--area_per_bead_vs_time.dat 		Mean area per membrane bead vs time (estimate)
+- area_per_bead_vs_time.dat: Mean area per membrane bead vs time (estimate)
 
-2) lda_segregation_patchy.py
+2) **lda_segregation_patchy.py**
 
 This script performs LDA analysis on the coordinates of the two polymers and returns error fraction f.
 The segregation efficiency can be obtaind as s=1-2*f, as detailed in the Methods (see Supporting Information).
 It returns:
 
--lda_frac_errors_vs_time.dat 	Error fraction f vs time
--lda_normal_vs_time.dat 		Normal to the LDA plane (segregation axis) vs time (3 components, x,y,z)
--last_lda_normal.dat  			Last LDA normal of the simulation
+- lda_frac_errors_vs_time.dat: Error fraction f vs time
+- lda_normal_vs_time.dat: Normal to the LDA plane (segregation axis) vs time (3 components, x,y,z)
+- last_lda_normal.dat: Last LDA normal of the simulation
 
-3) cm_dist_patchy.py
+3) **cm_dist_patchy.py**
 
 This script computes the distance between centers of mass (CoMs) of the two polymers. It returns:
 
--cm_dist_vs_time.dat 			Distance between the CoMs vs time
--cm_dist_resc_rmem_vs_time.dat 	Normalized (by mean membrane radius) distance between the CoMs vs time
--cm_vec_vs_time.dat 			Vector connecting the CoMs vs time (3 components, x,y,z)
+- cm_dist_vs_time.dat: Distance between the CoMs vs time
+- cm_dist_resc_rmem_vs_time.dat: Normalized (by mean membrane radius) distance between the CoMs vs time
+- cm_vec_vs_time.dat: Vector connecting the CoMs vs time (3 components, x,y,z)
