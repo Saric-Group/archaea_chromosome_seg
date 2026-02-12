@@ -120,10 +120,9 @@ group   patches  	type 3
 group   patchy_poly 	union polymers patches
 
 #SET MASSES
-# These commands override stuff in the data file (where density is used)
-mass 1 1.0
-mass 2 1.0
-mass 3 0.1 #patch mass is smaller
+set group polymers 	mass 1.0
+set group membrane 	mass 1.0
+set group patches 	mass 0.1 #patch mass is smaller
 
 #BOND COEFFICIENTS
 bond_coeff 	1 ${k_bond} ${req_bond} 
