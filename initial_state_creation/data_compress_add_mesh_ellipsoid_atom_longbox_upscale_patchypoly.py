@@ -15,7 +15,6 @@ import os, re, sys, time
 from numpy import *
 from numpy.random import *
 from scipy.spatial import KDTree
-import trimesh
 
 #=================================
 #Quaternion stuff
