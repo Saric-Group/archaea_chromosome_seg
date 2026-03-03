@@ -7,7 +7,7 @@
 - Python version 3.10.12 
 - Numpy version 1.25.2
 - Scipy version 1.11.1
-- scikit-learn version is 1.4.1
+- scikit-learn version 1.4.1
 
 - LAMMPS version 02/08/2023 (stable release)
 
