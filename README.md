@@ -130,7 +130,7 @@ This scripts analyzes the membrane configurations. It approximates the membrane 
 2) **lda_segregation_patchy.py**
 
 This script performs LDA analysis on the coordinates of the two polymers and returns the LDA error fraction $f$.
-The segregation efficiency can be obtaind as $s=1-2f$, as detailed in the Methods (see Supporting Information).
+The segregation efficiency can be obtaind as $s=1-2f$, as detailed in the Methods (see Supporting Information in [1]).
 It returns:
 
 - lda_frac_errors_vs_time.dat: Error fraction f vs time
@@ -144,3 +144,8 @@ This script computes the distance between centers of mass (CoMs) of the two poly
 - cm_dist_vs_time.dat: Distance between the CoMs vs time
 - cm_dist_resc_rmem_vs_time.dat: Normalized (by mean membrane radius) distance between the CoMs vs time
 - cm_vec_vs_time.dat: Vector connecting the CoMs vs time (3 components, x,y,z)
+
+# References
+
+[1] Parham, Sorichetti, Cezanne, Foo, Kuo, Hoogenberg, Radoux-Mergault, Mawdesley, Daniels Gatward, Boulanger, Schulze, Šarić, Baum, *Temporal and spatial coordination of DNA segregation and cell division in an archaeon*, [PNAS 122 (42), e2513939122 (2025)](https://doi.org/10.1073/pnas.2513939122)
+
