@@ -129,8 +129,8 @@ This scripts analyzes the membrane configurations. It approximates the membrane 
 
 2) **lda_segregation_patchy.py**
 
-This script performs LDA analysis on the coordinates of the two polymers and returns error fraction f.
-The segregation efficiency can be obtaind as s=1-2*f, as detailed in the Methods (see Supporting Information).
+This script performs LDA analysis on the coordinates of the two polymers and returns the LDA error fraction $f$.
+The segregation efficiency can be obtaind as $s=1-2f$, as detailed in the Methods (see Supporting Information).
 It returns:
 
 - lda_frac_errors_vs_time.dat: Error fraction f vs time
