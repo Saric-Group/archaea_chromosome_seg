@@ -201,7 +201,7 @@ neigh_modify	every 5 delay 0 check no 	#binsize $(v_box_x*0.1)
 ###IMPORTANT!###################
 #These commands make it so that the patches in the exclusion zone do not interact with other patches nor with membrane particles
 
-neigh_modify	exclude group patches_nostick patches_nostick check no #to make it so that particles in the groups membrane and patches_nostick do not interact with each other
+neigh_modify	exclude group patches_nostick patches_nostick check no #to make it so that particles in the group patches_nostick do not interact with each other
 #neigh_modify	exclude group membrane patches_nostick check no #to make it so that particles in the groups membrane and patches_nostick do not interact with each other
 ################################
 
