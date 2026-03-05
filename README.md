@@ -9,7 +9,7 @@
 - Scipy version 1.11.1
 - scikit-learn version 1.4.1
 
-- LAMMPS version 02/08/2023 (stable release)
+- [LAMMPS stable release 02/08/2023](https://github.com/lammps/lammps/releases/tag/stable_2Aug2023) (**later version might be incompatible** -- see **Note on neigh_modify exclude and dynamic groups** below)
 
 ## Compiling LAMMPS (for Unix-based systems)
 
@@ -105,6 +105,19 @@ This step is required to ensure that, during the compaction phase, compaction is
 
 4) You will obtain a .lammpsdata file (final state after compaction).
 
+### Note on neigh_modify exclude and dynamic groups
+
+In the compaction phase simulations, compaction is inhibited in a slab-shaped region in the middle of the simulation box, as described in the Methods (see Supporting Information in [1]). In order to achieve this, we used dynamic groups [2] within the command `neigh_modify exclude` [3].  Note that this is possible only with LAMMPS stable version **02/08/2023** or older. 
+Newer LAMMPS releases (24/08/24 forward) will raise an error if a dynamic group is used in `neigh_modify exclude`:
+
+```
+ERROR: Neigh_modify exclude group is not compatible with dynamic groups (../neighbor.cpp:2769)
+```
+
+This is because of the possibility of unexcpected behavior when using dynamic groups with `neigh_modify exclude`, as described for example [here](https://matsci.org/t/neigh-modify-exclude-dynamically/57184). However, from testing conducted in the specific case used in our simulations, this *seems to work as expected* in our code. 
+
+Naturally, excluding atoms from neighbor lists based on a dynamically defined group violates energy conservation, but our model does not assume that energy is conserved, in the sense that the different interactions are assumed to be regulated by an underlying energy-consuming process.
+
 # Data Analysis
 
 The analysis folder contains three python scripts to perform analysis of the LAMMPS simulations.
@@ -148,4 +161,8 @@ This script computes the distance between centers of mass (CoMs) of the two poly
 # References
 
 [1] Parham, Sorichetti, Cezanne, Foo, Kuo, Hoogenberg, Radoux-Mergault, Mawdesley, Daniels Gatward, Boulanger, Schulze, Šarić, Baum, *Temporal and spatial coordination of DNA segregation and cell division in an archaeon*, [PNAS 122 (42), e2513939122 (2025)](https://doi.org/10.1073/pnas.2513939122)
+
+[2] [LAMMPS manual: group command](https://docs.lammps.org/group.html)
+
+[3] [LAMMPS manual: neigh_modify command](https://docs.lammps.org/neigh_modify.html) 
 
