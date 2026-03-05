@@ -116,7 +116,7 @@ ERROR: Neigh_modify exclude group is not compatible with dynamic groups (../neig
 
 This is because of the possibility of unexcpected behavior when using dynamic groups with `neigh_modify exclude`, as described for example [here](https://matsci.org/t/neigh-modify-exclude-dynamically/57184). However, from testing conducted in the specific case used in our simulations, this *seems to work as expected* in our code. 
 
-Naturally, excluding atoms from neighbor lists based on a dynamically defined group violates energy conservation, but our model does not assume that energy is conserved, in the sense that the different interactions are assumed to be regulated by an underlying energy-consuming process.
+Naturally, excluding atoms from neighbor lists and thus changing their interactions based on a dynamically defined group locally violates energy conservation, but our model does not assume that energy is conserved, in the sense that the different interactions are assumed to be regulated by an underlying energy-consuming process.
 
 # Data Analysis
 
