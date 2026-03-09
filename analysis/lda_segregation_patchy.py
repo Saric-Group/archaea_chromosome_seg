@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 This script performs LDA analysis on the coordinates of the two polymers and returns error fraction f.
 The segregation efficiency can be obtaind as s=1-2*f, as detailed in the Methods (see Supporting Information).
@@ -31,7 +32,6 @@ Each polymer bead has the same mol_id as the patch it is attached to, as (polyme
 Polymer 1: 				1 <= mol_id <= polymer_length (default 500)
 Polymer 2: 				polymer_length+1 (default 501) <= mol_id <= 2*polymer_length (default 1000)
 """
-
 import os, sys, time
 from numpy import *
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
