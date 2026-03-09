@@ -1,7 +1,30 @@
-#This script computes the distance between centers of mass (CoMs) of the two polymers. It returns:
-#-cm_dist_vs_time.dat 			Distance between the CoMs vs time
-#-cm_dist_resc_rmem_vs_time.dat 	Normalized (by mean membrane radius) distance between the CoMs vs time
-#-cm_vec_vs_time.dat 			Vector connecting the CoMs vs time (3 components, x,y,z)
+# This script computes the distance between centers of mass (CoMs) of the two polymers. It returns:
+# -cm_dist_vs_time.dat 			Distance between the CoMs vs time
+# -cm_dist_resc_rmem_vs_time.dat 	Normalized (by mean membrane radius) distance between the CoMs vs time
+# -cm_vec_vs_time.dat 			Vector connecting the CoMs vs time (3 components, x,y,z)
+
+# It is assumed that the LAMMPS data have the following atom_type, atom_ids and mol_ids:
+#
+# atom_types:
+#
+# Polymer beads: atom_type=1
+# Membrane beads: atom_type=2
+# Attractive patches: atom_type=3
+#
+# atom_ids:
+#
+# Beads of polymer n.1: 	1 <= atom_id <= polymer_length (default 500)
+# Beads of polymer n.2: 	polymer_length+1 (default 501) <= atom_id <= 2*polymer_length (default 1000)
+# Patches of polymer n.1: 	2*polymer_length+1 (default 1001) <= atom_id <= 3*polymer_length (default 1500)
+# Patches of polymer n.2: 	3*polymer_length+1 (default 1501) <= atom_id <= 4*polymer_length (default 2000)
+# Membrane beads: 			atom_id > 2000
+#
+# mol_ids:
+#
+# Each polymer bead has the same mol_id as the patch it is attached to, as (polymer bead + patch) is treated as a single rigid body in the simulation.
+# 
+# Polymer 1: 				1 <= mol_id <= polymer_length (default 500)
+# Polymer 2: 				polymer_length+1 (default 501) <= mol_id <= 2*polymer_length (default 1000)
 
 def compute_cm(coors):
 	xcm=average(coors[:,0])
