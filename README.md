@@ -27,9 +27,11 @@ The following instructions allow to install LAMMPS using make on Ubuntu or other
 
 1) Download LAMMPS stable version 02/08/2023 tarball from the following page: https://download.lammps.org/tars/index.html
 
-2) Uncompress tarball: 
+2) Extract the tarball: 
 
-	tar -xzvf lammps*.tar.gz
+```
+tar -xzvf lammps*.tar.gz
+```
 
 3) Copy modified files pair_cosine_squared.cpp and pair_cosine_squared.h into lammps-2Aug2023/src/EXTRA-PAIR, replacing existing files.
 
@@ -50,8 +52,7 @@ The following instructions allow to install LAMMPS using make on Ubuntu or other
 
 # LAMMPS simulations
 
-In the lammps directory, you will find a compiled LAMMPS executable lmp_mpi (compiled on Ubuntu 22.04.5).
-We however recommend to recompile the executable, following the steps listed in "Compiling LAMMPS"
+After compling LAMMPS following the steps listed in "Compiling LAMMPS", you should obtain an exectuable lmp_mpi.
 
 ## Initial state creation
 
@@ -77,7 +78,7 @@ We however recommend to recompile the executable, following the steps listed in 
 
 3) Run LAMMPS script ylz_patchypoly_hc_mobile.in:
 
-	Example: ../../lammps/lmp_mpi -in ylz_patchypoly_hc_mobile.in
+	Example: ~/lammps-2Aug2023/src/lmp_mpi -in ylz_patchypoly_hc_mobile.in
 
 4) You will obtain a LAMMPS data file data.ylz_patchy_hc_mobile. Note that, in this file, x axis does *not* coincide with the axis of maximum segregation.
 
@@ -101,7 +102,7 @@ This step is required to ensure that, during the compaction phase, compaction is
 
 3) Run the LAMMPS input file, for example ylz_patchypoly_hc_compactFast_wetUnif.in:
 
-	Example: ../../lammps/lmp_mpi -in ylz_patchypoly_hc_compactFast_wetUnif.in
+	Example: .~/lammps-2Aug2023/src/lmp_mpi -in ylz_patchypoly_hc_compactFast_wetUnif.in
 
 4) You will obtain a .lammpsdata file (final state after compaction).
 
