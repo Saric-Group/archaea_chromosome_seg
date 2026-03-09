@@ -1,32 +1,36 @@
-# This script performs LDA analysis on the coordinates of the two polymers and returns error fraction f.
-# The segregation efficiency can be obtaind as s=1-2*f, as detailed in the Methods (see Supporting Information).
-# It returns:
-# -lda_frac_errors_vs_time.dat 	Error fraction f vs time
-# -lda_normal_vs_time.dat 		Normal to the LDA plane (segregation axis) vs time (3 components, x,y,z)
-# -last_lda_normal.dat  			Last LDA normal of the simulation
+"""
+This script performs LDA analysis on the coordinates of the two polymers and returns error fraction f.
+The segregation efficiency can be obtaind as s=1-2*f, as detailed in the Methods (see Supporting Information).
+It returns:
+-lda_frac_errors_vs_time.dat 	Error fraction f vs time
+-lda_normal_vs_time.dat 		Normal to the LDA plane (segregation axis) vs time (3 components, x,y,z)
+-last_lda_normal.dat  			Last LDA normal of the simulation
 
-# It is assumed that the LAMMPS data have the following atom_type, atom_ids and mol_ids:
-#
-# atom_types:
-#
-# Polymer beads: atom_type=1
-# Membrane beads: atom_type=2
-# Attractive patches: atom_type=3
-#
-# atom_ids:
-#
-# Beads of polymer n.1: 	1 <= atom_id <= polymer_length (default 500)
-# Beads of polymer n.2: 	polymer_length+1 (default 501) <= atom_id <= 2*polymer_length (default 1000)
-# Patches of polymer n.1: 	2*polymer_length+1 (default 1001) <= atom_id <= 3*polymer_length (default 1500)
-# Patches of polymer n.2: 	3*polymer_length+1 (default 1501) <= atom_id <= 4*polymer_length (default 2000)
-# Membrane beads: 			atom_id > 2000
-#
-# mol_ids:
-#
-# Each polymer bead has the same mol_id as the patch it is attached to, as (polymer bead + patch) is treated as a single rigid body in the simulation.
-# 
-# Polymer 1: 				1 <= mol_id <= polymer_length (default 500)
-# Polymer 2: 				polymer_length+1 (default 501) <= mol_id <= 2*polymer_length (default 1000)
+LAMMPS data file format
+-----------------------
+It is assumed that the LAMMPS data have the following atom_type, atom_ids and mol_ids:
+
+atom_types
+----------
+Polymer beads: atom_type=1
+Membrane beads: atom_type=2
+Attractive patches: atom_type=3
+
+atom_ids
+----------
+Beads of polymer n.1: 	1 <= atom_id <= polymer_length (default 500)
+Beads of polymer n.2: 	polymer_length+1 (default 501) <= atom_id <= 2*polymer_length (default 1000)
+Patches of polymer n.1: 	2*polymer_length+1 (default 1001) <= atom_id <= 3*polymer_length (default 1500)
+Patches of polymer n.2: 	3*polymer_length+1 (default 1501) <= atom_id <= 4*polymer_length (default 2000)
+Membrane beads: 			atom_id > 2000
+
+mol_ids
+----------
+Each polymer bead has the same mol_id as the patch it is attached to, as (polymer bead + patch) is treated as a single rigid body in the simulation.
+
+Polymer 1: 				1 <= mol_id <= polymer_length (default 500)
+Polymer 2: 				polymer_length+1 (default 501) <= mol_id <= 2*polymer_length (default 1000)
+"""
 
 import os, sys, time
 from numpy import *
