@@ -1,12 +1,34 @@
-#This scripts analyzes the membrane configurations. It approximates the membrane surface using the convex hull method, and returns several quantities:
-#-natoms.dat 					Number of membrane atoms
-#-hull_radius_av.dat  			Mean membrane radius
-#-hull_volume_vs_time.dat  		Membrane volume vs time
-#-hull_area_vs_time.dat  		Membrane area vs time
-#-hull_radius_vs_time.dat  		Membrane radius vs time 
-#-neigh_distance_vs_time.dat 	Mean distance between neighbouring membrane particles vs time
-#-area_per_bead_vs_time.dat 		Mean area per membrane bead vs time (estimate)
+# This scripts analyzes the membrane configurations. It approximates the membrane surface using the convex hull method, and returns several quantities:
+# -natoms.dat 					Number of membrane atoms
+# -hull_radius_av.dat  			Mean membrane radius
+# -hull_volume_vs_time.dat  		Membrane volume vs time
+# -hull_area_vs_time.dat  		Membrane area vs time
+# -hull_radius_vs_time.dat  		Membrane radius vs time 
+# -neigh_distance_vs_time.dat 	Mean distance between neighbouring membrane particles vs time
+# -area_per_bead_vs_time.dat 		Mean area per membrane bead vs time (estimate)
 
+# It is assumed that the LAMMPS data have the following atom_type, atom_ids and mol_ids:
+#
+# atom_types:
+#
+# Polymer beads: atom_type=1
+# Membrane beads: atom_type=2
+# Attractive patches: atom_type=3
+#
+# atom_ids:
+#
+# Beads of polymer n.1: 	1 <= atom_id <= polymer_length (default 500)
+# Beads of polymer n.2: 	polymer_length+1 (default 501) <= atom_id <= 2*polymer_length (default 1000)
+# Patches of polymer n.1: 	2*polymer_length+1 (default 1001) <= atom_id <= 3*polymer_length (default 1500)
+# Patches of polymer n.2: 	3*polymer_length+1 (default 1501) <= atom_id <= 4*polymer_length (default 2000)
+# Membrane beads: 			atom_id > 2000
+#
+# mol_ids:
+#
+# Each polymer bead has the same mol_id as the patch it is attached to, as (polymer bead + patch) is treated as a single rigid body in the simulation.
+# 
+# Polymer 1: 				1 <= mol_id <= polymer_length (default 500)
+# Polymer 2: 				polymer_length+1 (default 501) <= mol_id <= 2*polymer_length (default 1000)
 
 def average_nearest_neighbor_distance(points):
     tree = KDTree(points)
