@@ -1,6 +1,14 @@
 <img src="images/archaea_chromosome_seg.png" width="500">
 
-# General
+# Contents
+
+- [General description](#general-description)
+- [Requirements](#requirements)
+- [LAMMPS simulations](#lammps-simulations)
+- [Data Analysis](#data-analysis)
+- [Refernces](#references)
+
+# General description
 
 Performs coarse-grained molecular dynamics simulations of chromosome segregation using LAMMPS as described in [1] (see in particular the Methods section in the reference for a detailed description of the simulation model and protocol). 
 
