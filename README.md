@@ -7,6 +7,7 @@
 - [LAMMPS simulations](#lammps-simulations)
 - [Data Analysis](#data-analysis)
 - [References](#references)
+- [Author](#author)
 
 # General description
 
@@ -183,7 +184,7 @@ This script computes the distance between centers of mass (CoMs) of the two poly
 
 [3] [LAMMPS documentation: neigh_modify command](https://docs.lammps.org/neigh_modify.html) 
 
-# Authors
+# Author
 
 Created by Valerio Sorichetti, Šarić group, Institute of Science and Technology Austria.
 
