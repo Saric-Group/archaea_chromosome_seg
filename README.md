@@ -186,5 +186,5 @@ This script computes the distance between centers of mass (CoMs) of the two poly
 
 # Author
 
-Created by [Valerio Sorichett](https://vsorichetti.wordpress.com/), [Šarić group](https://andelasaric.com/), [Institute of Science and Technology Austria](https://ista.ac.at/en/home/).
+Created by [Valerio Sorichetti](https://vsorichetti.wordpress.com/), [Šarić group](https://andelasaric.com/), [Institute of Science and Technology Austria](https://ista.ac.at/en/home/).
 
