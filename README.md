@@ -54,7 +54,7 @@ tar -xzvf lammps*.tar.gz
 
 4) Move into the directory lammps-2Aug2023/src
 
-3) Install additional packages (for examples: make yes-rigid)
+3) Install additional packages (for example: make yes-rigid)
 
 - ASPHERE  
 - EXTRA-COMPUTE 
