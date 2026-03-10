@@ -1,3 +1,5 @@
+![Coarse-grained simulation of archeal chromosome segregation](images/archaea_chromosome_seg.png)
+
 # Requirements
 
 - A Bourne shell compatible “Unix” shell program (frequently this is bash)
