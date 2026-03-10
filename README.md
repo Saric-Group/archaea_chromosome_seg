@@ -6,7 +6,7 @@
 - [Requirements](#requirements)
 - [LAMMPS simulations](#lammps-simulations)
 - [Data Analysis](#data-analysis)
-- [Refernces](#references)
+- [References](#references)
 
 # General description
 
