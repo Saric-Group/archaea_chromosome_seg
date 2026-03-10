@@ -1,4 +1,4 @@
-![Coarse-grained simulation of archeal chromosome segregation](images/archaea_chromosome_seg.png)
+<img src="images/archaea_chromosome_seg.png" width="500">
 
 # Requirements
 
