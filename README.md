@@ -1,5 +1,11 @@
 <img src="images/archaea_chromosome_seg.png" width="500">
 
+# General
+
+Performs coarse-grained molecular dynamics simulations of chromosome segregation using LAMMPS as described in [1] (see in particular the Methods section in the reference for a detailed description of the simulation model and protocol). 
+
+The simulations are analyzed using custom Python scripts (see the [Data Analysis](#data-analysis) section below).
+
 # Requirements
 
 - A Bourne shell compatible “Unix” shell program (frequently this is bash)
