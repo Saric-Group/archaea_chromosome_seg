@@ -1,15 +1,37 @@
-#Adds a spherical mesh membrane to a configurations of polymers 
-#initially enclosed in a sphere of radius r_wall.
-#
-#This version additionally upscales the size of the polymer beads,
-#so that the polymer bead diameter is larger than the membrane bead one.
-#
-#In this version, the polymer beads are rigid bodies with the same center of mass.
-#The rigid body is made of a type 1 particle and a type 3 particle, whereas the membrane beads are type 2.
-#Particles belonging to the same rigid bodies must have the same molecular id
-#
-#Using rigid bodies is required to split the repulsive and attractive contributions of the interaction 
-#between two different particles
+"""
+Adds a spherical mesh membrane to a configurations of polymers 
+initially enclosed in a sphere of radius r_wall.
+
+This version additionally upscales the size of the polymer beads,
+so that the polymer bead diameter is larger than the membrane bead one.
+
+In this version, the polymer beads are rigid bodies with the same center of mass.
+The rigid body is made of a type 1 particle ("polymer" particle) and a type 3 particle ("patch"), whereas the membrane beads are type 2.
+Particles belonging to the same rigid bodies must have the same molecular id
+
+It is assumed that the LAMMPS data have the following atom_type, atom_ids and mol_ids:
+
+atom_types:
+
+Polymer beads: atom_type=1
+Membrane beads: atom_type=2
+Attractive patches: atom_type=3
+
+atom_ids:
+
+Beads of polymer n.1: 	1 <= atom_id <= polymer_length (default 500)
+Beads of polymer n.2: 	polymer_length+1 (default 501) <= atom_id <= 2*polymer_length (default 1000)
+Patches of polymer n.1: 	2*polymer_length+1 (default 1001) <= atom_id <= 3*polymer_length (default 1500)
+Patches of polymer n.2: 	3*polymer_length+1 (default 1501) <= atom_id <= 4*polymer_length (default 2000)
+Membrane beads: 			atom_id > 2000
+
+mol_ids:
+
+Each polymer bead has the same mol_id as the patch it is attached to, as (polymer bead + patch) is treated as a single rigid body in the simulation.
+
+Polymer 1: 				1 <= mol_id <= polymer_length (default 500)
+Polymer 2: 				polymer_length+1 (default 501) <= mol_id <= 2*polymer_length (default 1000)
+"""
 
 import os, re, sys, time
 from numpy import *
