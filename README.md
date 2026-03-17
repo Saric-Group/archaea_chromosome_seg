@@ -77,27 +77,27 @@ After compling LAMMPS following the steps listed in "Compiling LAMMPS", you shou
 
 2) Run python script create_2rings_noangles_connected.py
 
-3) You will obtain a LAMMPS data file 2rings_connected_N500_box140.06.lammpsdata
+3) You will obtain a LAMMPS data file **2rings_connected_N500_box140.06.lammpsdata**
 
 4) Run LAMMPS script rings_squeeze_noangles_soft_harmonic_connected.in
 
-5) You will obtain a LAMMPS data file data.compress
+5) You will obtain a LAMMPS data file **data.compress**
 
 6) Run python script data_compress_add_mesh_ellipsoid_atom_longbox_upscale_patchypoly.py
 
-7) You will obtain a LAMMPS data file data_mesh_ylz_patchy_poly_diameter2.00_natoms_sphere6750_lx123.24_ly82.16_lz82.16.lammpsdata - This is the initial configuration for the mobile phase simulation.
+7) You will obtain a LAMMPS data file **data_mesh_ylz_patchy_poly_diameter2.00_natoms_sphere6750_lx123.24_ly82.16_lz82.16.lammpsdata** - This is the initial configuration for the mobile phase simulation.
 
 ## Mobile phase
 
 1) Move into the directory [mobile_phase](/mobile_phase)
 
-2) Copy the LAMMPS data file data_mesh_ylz_patchy_poly_diameter2.00_natoms_sphere6750_lx123.24_ly82.16_lz82.16.lammpsdata (initial state) into the directory.
+2) Copy the LAMMPS data file **data_mesh_ylz_patchy_poly_diameter2.00_natoms_sphere6750_lx123.24_ly82.16_lz82.16.lammpsdata** (initial state) into the directory.
 
 3) Run LAMMPS script ylz_patchypoly_hc_mobile.in:
 
 	Example: `~/lammps-2Aug2023/src/lmp_mpi -in ylz_patchypoly_hc_mobile.in`
 
-4) You will obtain a LAMMPS data file data.ylz_patchy_hc_mobile. Note that, in this file, x axis does *not* coincide with the axis of maximum segregation.
+4) You will obtain a LAMMPS data file **data.ylz_patchy_hc_mobile**. Note that, in this file, x axis does *not* coincide with the axis of maximum segregation.
 
 ### Choosing the x axis as the axis of maximum segregation
 
@@ -105,11 +105,11 @@ This step is required to ensure that, during the compaction phase, compaction is
 
 1) From the mobile_phase directory, run the script lda_segregation_patchy.py (see **Data Analysis** below for details).
 
-2) You will obtain a file last_lda_normal.dat.
+2) You will obtain a file **last_lda_normal.dat**.
 
-3) Run the script data_ylz_patchypoly_rotate_xaxis.py.
+3) Run the script **data_ylz_patchypoly_rotate_xaxis.py**.
 
-4) You will obtain a file data.ylz_patchy_hc_mobile_rotate_xaxis_lda_norm. In this file, the x axis coincides with the axis of maximum segregation as determined by LDA. 
+4) You will obtain a file **data.ylz_patchy_hc_mobile_rotate_xaxis_lda_norm**. In this file, the x axis coincides with the axis of maximum segregation as determined by LDA. 
 
 ## Compaction phase
 
