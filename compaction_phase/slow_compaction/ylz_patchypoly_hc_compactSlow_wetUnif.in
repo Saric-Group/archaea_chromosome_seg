@@ -134,10 +134,28 @@ group   patches  	type 3
 group   patchy_poly 	union polymers patches
 group  	patches_nostick dynamic patches region exclusion every 5 #In this region, patches will *NOT* interact with membrane atoms / other patches
 
+#################################################################################################
 #SET MASSES
-set group polymers 	mass 1.0
-set group membrane 	mass 1.0
-set group patches 	mass 0.1 #patch mass is smaller
+variable poly_mass equal 1.0
+variable mem_mass equal 1.0
+variable patch_mass equal 0.01 #patch mass is smaller
+
+#SET PER-TYPE MASSES
+#The mass command is needed so that the correct masses are written by write_data
+mass 1 ${poly_mass}
+mass 2 ${mem_mass}
+mass 3 ${patch_mass} #patch mass is smaller
+
+#SET PER-ATOM MASSES
+#The following commands override the density/mass values in the data file (where density is used for ellipsoids and mass for point particles)
+#!!!Using only the mass command would only change the per-type mass, without affeting the per-atom mass!!!
+#Relevant documentation: 
+#1) https://docs.lammps.org/atom_style.html
+#2) https://docs.lammps.org/set.html
+set group polymers 	mass ${poly_mass}
+set group membrane 	mass ${mem_mass}
+set group patches 	mass ${patch_mass} #patch mass is smaller
+#################################################################################################
 
 #BOND COEFFICIENTS
 bond_coeff 	1 ${k_bond} ${req_bond} 
