@@ -73,7 +73,7 @@ After compling LAMMPS following the steps listed in "Compiling LAMMPS", you shou
 
 ## Initial state creation
 
-1) Move into the directory initial_state_creation
+1) Move into the directory [initial_state_creation](/initial_state_creation)
 
 2) Run python script create_2rings_noangles_connected.py
 
@@ -89,13 +89,13 @@ After compling LAMMPS following the steps listed in "Compiling LAMMPS", you shou
 
 ## Mobile phase
 
-1) Move into the directory mobile_phase
+1) Move into the directory [mobile_phase](/mobile_phase)
 
 2) Copy the LAMMPS data file data_mesh_ylz_patchy_poly_diameter2.00_natoms_sphere6750_lx123.24_ly82.16_lz82.16.lammpsdata (initial state) into the directory.
 
 3) Run LAMMPS script ylz_patchypoly_hc_mobile.in:
 
-	Example: ~/lammps-2Aug2023/src/lmp_mpi -in ylz_patchypoly_hc_mobile.in
+	Example: `~/lammps-2Aug2023/src/lmp_mpi -in ylz_patchypoly_hc_mobile.in`
 
 4) You will obtain a LAMMPS data file data.ylz_patchy_hc_mobile. Note that, in this file, x axis does *not* coincide with the axis of maximum segregation.
 
@@ -113,7 +113,7 @@ This step is required to ensure that, during the compaction phase, compaction is
 
 ## Compaction phase
 
-1) Move into one of the directories in the compaction_phase directory (for example, fast_compaction)
+1) Move into one of the sub directories in the [compaction_phase](/compaction_phase) directory (for example, [fast_compaction](/compaction_phase/fast_compaction))
 
 2) Copy the LAMMPS data file data.ylz_patchy_hc_mobile_rotate_xaxis_lda_norm, generated at the end of the mobile phase simulation, into the directory and rename it "data" (an example file is already present in the directory).
 
@@ -133,6 +133,8 @@ ERROR: Neigh_modify exclude group is not compatible with dynamic groups (../neig
 ```
 
 This is because of the possibility of unexcpected behavior when using dynamic groups with `neigh_modify exclude`, as described for example [here](https://matsci.org/t/neigh-modify-exclude-dynamically/57184). However, from testing conducted in the specific case used in our simulations, this *seems to work as expected* in our code. 
+
+A minimal example testing the behavior of `neigh_modify exclude` with dynamic groups can be found in the [neigh_modify_exclude_test](/neigh_modify_exclude_test) folder. Here, we report a simulation of fast compaction with no membrane and no bonds between the polymer beads (so that they behave as a fluid). The width of the "no compaction zone" is tuned via the parameter **width_factor_box**; an example initial configuration, with beads arranged on a lattice, is provided. To generate a different initial congfiguration, use the script [create_patchy_beads_lattice.py](/neigh_modify_exclude_test/create_patchy_beads_lattice.py), and copy/rename the resulting LAMMPS data file to data. The rest of the simulation parameters are the same as those used in the fast compaction simulation, whith a higher epsilon_aa (0.75 instead of 0.25).
 
 Naturally, excluding atoms from neighbor lists and thus changing their interactions based on a dynamically defined group locally violates energy conservation, but our model does not assume that energy is conserved, in the sense that the different interactions are assumed to be regulated by an underlying energy-consuming process.
 
