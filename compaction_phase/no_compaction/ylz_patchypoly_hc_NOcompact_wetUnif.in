@@ -137,7 +137,7 @@ group   patchy_poly 	union polymers patches
 #SET MASSES
 variable poly_mass equal 1.0
 variable mem_mass equal 1.0
-variable patch_mass equal 0.01 #patch mass is smaller
+variable patch_mass equal 0.1 #patch mass is smaller
 
 #SET PER-TYPE MASSES
 #The mass command is needed so that the correct masses are written by write_data
