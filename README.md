@@ -182,7 +182,7 @@ This script computes the distance between centers of mass (CoMs) of the two poly
 
 [1] Parham, Sorichetti, Cezanne, Foo, Kuo, Hoogenberg, Radoux-Mergault, Mawdesley, Daniels Gatward, Boulanger, Schulze, Šarić, Baum, *Temporal and spatial coordination of DNA segregation and cell division in an archaeon*, [PNAS 122 (42), e2513939122 (2025)](https://doi.org/10.1073/pnas.2513939122) 
 
-**Note**: at pag. 17 of the Extended Data, the mass of the polymer beads was erroneusly reported as being $1.1m$, where $m$ is the mass of a membrane bead. The actual value of the polymer bead mass is $3.82$. This has no qualitatitive effect on the results reported. Moreover, the value of the polymer bead mass is largely arbitrary and not mapped to any experimentally measured quantity. 
+**Note**: at pag. 17 of the Extended Data, the value of the polymer bead mass was erroneusly reported as being $1.1m$, where $m$ is the mass of a membrane bead. The actual value of the polymer bead mass is $3.82$. This has no qualitatitive effect on the results reported. Moreover, the value of the polymer bead mass is largely arbitrary and not mapped to any experimentally measured quantity. 
 
 [2] [LAMMPS documentation: group command](https://docs.lammps.org/group.html)
 
