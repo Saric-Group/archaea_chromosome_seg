@@ -125,7 +125,7 @@ This step is required to ensure that, during the compaction phase, compaction is
 
 ### Note on neigh_modify exclude and dynamic groups
 
-In the compaction phase simulations, compaction is inhibited in a slab-shaped region in the middle of the simulation box, as described in the Methods (see Supporting Information in [1]). In order to achieve this, we used dynamic groups [2] within the command `neigh_modify exclude` [3].  Note that this is possible only with LAMMPS stable version **02/08/2023** or older. 
+In the compaction phase simulations, compaction is inhibited in a slab-shaped region in the middle of the simulation box, as described in the Methods (see Appendinx / Extended Data in [1]). In order to achieve this, we used dynamic groups [2] within the command `neigh_modify exclude` [3].  Note that this is possible only with LAMMPS stable version **02/08/2023** or older. 
 Newer LAMMPS releases (24/08/24 forward) will raise an error if a dynamic group is used in `neigh_modify exclude`:
 
 ```
@@ -163,7 +163,7 @@ This scripts analyzes the membrane configurations. It approximates the membrane 
 2) **lda_segregation_patchy.py**
 
 This script performs LDA analysis on the coordinates of the two polymers and returns the LDA error fraction $f$.
-The segregation efficiency can be obtaind as $s=1-2f$, as detailed in the Methods (see Supporting Information in [1]).
+The segregation efficiency can be obtaind as $s=1-2f$, as detailed in the Methods (see Appendix / Extended Data in [1]).
 It returns:
 
 - lda_frac_errors_vs_time.dat: Error fraction f vs time
@@ -180,7 +180,7 @@ This script computes the distance between centers of mass (CoMs) of the two poly
 
 # References
 
-[1] Parham, Sorichetti, Cezanne, Foo, Kuo, Hoogenberg, Radoux-Mergault, Mawdesley, Daniels Gatward, Boulanger, Schulze, Šarić, Baum, *Temporal and spatial coordination of DNA segregation and cell division in an archaeon*, [PNAS 122 (42), e2513939122 (2025)](https://doi.org/10.1073/pnas.2513939122)
+[1] Parham, Sorichetti, Cezanne, Foo, Kuo, Hoogenberg, Radoux-Mergault, Mawdesley, Daniels Gatward, Boulanger, Schulze, Šarić, Baum, *Temporal and spatial coordination of DNA segregation and cell division in an archaeon*, [PNAS 122 (42), e2513939122 (2025)](https://doi.org/10.1073/pnas.2513939122) **Note**: at pag. 17 of the Extended Data, the mass of the polymer beads was erroneusly reported as being $1.1m$, where $m$ is the mass of a membrane bead. The actual value of the polymer bead mass is $3.82$. This has no qualitatitive effect on the results reported. Moreover, the value of the polymer bead mass is largely arbitrary and not mapped to any experimentally measured quantity. 
 
 [2] [LAMMPS documentation: group command](https://docs.lammps.org/group.html)
 
