@@ -1,5 +1,3 @@
-<img src="images/archaea_chromosome_seg.png" width="500">
-
 # Contents
 
 - [General description](#general-description)
