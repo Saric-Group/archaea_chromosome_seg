@@ -75,15 +75,15 @@ After compling LAMMPS following the steps listed in "Compiling LAMMPS", you shou
 
 1) Move into the directory [initial_state_creation](/initial_state_creation)
 
-2) Run python script create_2rings_noangles_connected.py
+2) Run python script **create_2rings_noangles_connected.py**
 
 3) You will obtain a LAMMPS data file **2rings_connected_N500_box140.06.lammpsdata**
 
-4) Run LAMMPS script rings_squeeze_noangles_soft_harmonic_connected.in
+4) Run LAMMPS script **rings_squeeze_noangles_soft_harmonic_connected.in**
 
 5) You will obtain a LAMMPS data file **data.compress**
 
-6) Run python script data_compress_add_mesh_ellipsoid_atom_longbox_upscale_patchypoly.py
+6) Run python script **data_compress_add_mesh_ellipsoid_atom_longbox_upscale_patchypoly.py**
 
 7) You will obtain a LAMMPS data file **data_mesh_ylz_patchy_poly_diameter2.00_natoms_sphere6750_lx123.24_ly82.16_lz82.16.lammpsdata** - This is the initial configuration for the mobile phase simulation.
 
@@ -93,7 +93,7 @@ After compling LAMMPS following the steps listed in "Compiling LAMMPS", you shou
 
 2) Copy the LAMMPS data file **data_mesh_ylz_patchy_poly_diameter2.00_natoms_sphere6750_lx123.24_ly82.16_lz82.16.lammpsdata** (initial state) into the directory.
 
-3) Run LAMMPS script ylz_patchypoly_hc_mobile.in:
+3) Run LAMMPS script **ylz_patchypoly_hc_mobile.in**:
 
 	Example: `~/lammps-2Aug2023/src/lmp_mpi -in ylz_patchypoly_hc_mobile.in`
 
@@ -103,7 +103,7 @@ After compling LAMMPS following the steps listed in "Compiling LAMMPS", you shou
 
 This step is required to ensure that, during the compaction phase, compaction is inhibited in a volume that lays perpendicular to the axis of maximum segregation.
 
-1) From the mobile_phase directory, run the script lda_segregation_patchy.py (see **Data Analysis** below for details).
+1) From the mobile_phase directory, run the script **lda_segregation_patchy.py** (see [Data Analysis](#data-analysis) below for details).
 
 2) You will obtain a file **last_lda_normal.dat**.
 
@@ -117,7 +117,7 @@ This step is required to ensure that, during the compaction phase, compaction is
 
 2) Copy the LAMMPS data file data.ylz_patchy_hc_mobile_rotate_xaxis_lda_norm, generated at the end of the mobile phase simulation, into the directory and rename it "data" (an example file is already present in the directory).
 
-3) Run the LAMMPS input file, for example ylz_patchypoly_hc_compactFast_wetUnif.in:
+3) Run the LAMMPS input file, for example **ylz_patchypoly_hc_compactFast_wetUnif.in**:
 
 	Example: .~/lammps-2Aug2023/src/lmp_mpi -in ylz_patchypoly_hc_compactFast_wetUnif.in
 
